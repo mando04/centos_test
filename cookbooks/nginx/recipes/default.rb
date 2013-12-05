@@ -40,6 +40,7 @@ directory "/apps/web/sfw/nginx/nginx-1.4.3" do
   action :create
 end
 
+
 directory "/apps/web/sfw/nginx/nginx-1.4.3/sites-available" do
   owner "root"
   group "root"
@@ -103,8 +104,6 @@ template "#{node['nginx']['dir']}/sites-enabled/default" do
   group  'root'
   mode   '0644'
 end
-
-include_recipe "nginx::gencerts"
 
 execute "Starting nginx" do
   command "#{node[:nginx][:script_dir]}/nginx"
