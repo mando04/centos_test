@@ -90,6 +90,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "nginx-certs"
     chef.add_recipe "nginx"
     chef.log_level = :debug
+    chef.verbose_logging = true
   #   chef.add_role "web"
   #
   #   # You may also specify custom JSON attributes:
