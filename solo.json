@@ -1,0 +1,8 @@
+
+{
+  "run_list": [
+    "recipe[nginx-certs]",
+    "recipe[nginx]",
+    "recipe[mywiki]"
+  ]
+}

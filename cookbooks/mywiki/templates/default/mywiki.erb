@@ -1,0 +1,45 @@
+    server {
+        listen       80;
+        server_name  mywiki.crabdance.com;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+        location /mywiki.png {
+           alias /apps/web/www/mywiki/moin-1.9.7/MoinMoin/web/static/htdocs/common/mywiki-angry.png;
+        }
+
+        location / {
+            proxy_pass http://127.0.0.1:8080/;
+        }
+        
+        error_page  404              /404.html;
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+
+server {
+    listen       443;
+    access_log  <%= node['nginx']['log_dir'] %>/localhost-ssl.access.log;
+    error_log <%= node['nginx']['log_dir'] %>/localhost-ssl.error.log;
+    ssl                  on;
+    ssl_certificate      <%= node['nginx']['ssl_dir'] %>/server.crt;
+    ssl_certificate_key  <%= node['nginx']['ssl_dir'] %>/server.key;
+
+    ssl_session_timeout  5m;
+
+    ssl_protocols  SSLv2 SSLv3 TLSv1;
+    ssl_ciphers  HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers   on;
+
+        location /mywiki.png {
+           alias /apps/web/www/mywiki/moin-1.9.7/MoinMoin/web/static/htdocs/common/mywiki-angry.png;
+        }
+
+        location / {
+            proxy_pass http://127.0.0.1:8080/;
+        }
+    }
