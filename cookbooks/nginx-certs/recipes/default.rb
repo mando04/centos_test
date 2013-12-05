@@ -12,7 +12,7 @@ directory "#{node['nginx']['ssl_dir']}" do
   action :create
 end
 
-bash "Installing Nginx from source" do
+bash "creating certs" do
     interpreter "bash"
     user "root"
     cwd "/tmp"

@@ -4,10 +4,13 @@ server {
 
   access_log  <%= node['nginx']['log_dir'] %>/localhost.access.log;
 
-  location / {
-    root   <%= node[:nginx][:dir] %>/html;
-    index  index.html index.htm;
-  }
+#  location / {
+#    root   <%= node[:nginx][:dir] %>/html;
+#    index  index.html index.htm;
+#  }
+   location / {
+     proxy_pass http://127.0.0.1:8000/;
+   }
 }
 
 server {
@@ -25,7 +28,8 @@ server {
     ssl_prefer_server_ciphers   on;
 
     location / {
-        root   <%= node[:nginx][:dir] %>/html;
-        index  index.html index.htm;
+    #    root   <%= node[:nginx][:dir] %>/html;
+    #    index  index.html index.htm;
+         proxy_pass http://127.0.0.1:8000/;
     }
 }
