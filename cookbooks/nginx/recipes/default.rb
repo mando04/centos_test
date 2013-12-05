@@ -1,14 +1,7 @@
 
 package "wget" do
-    action :install
-end
-package "wget" do
   action :install
 end
-package "openssl-devel" do
-  action :install
-end
-
 
 user "webadmin" do
   home "/home/webadmin"
