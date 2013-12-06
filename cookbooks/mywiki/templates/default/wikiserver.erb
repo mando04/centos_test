@@ -1,0 +1,98 @@
+#!/bin/sh
+#
+# nginx
+#
+# chkconfig:   - 57 47
+# description: nginx
+# processname:  nginx
+# config:       /etc/sysconfig/nginx
+#
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit
+exec=<%= node['mywiki']['binary'] %>
+prog=$(basename $exec)
+
+# default options, overruled by items in sysconfig
+MYWIKI_GLOBAL=""
+
+[ -e /etc/sysconfig/nginx ] && . /etc/sysconfig/nginx
+
+lockfile=/var/lock/subsys/wikiserver
+
+start() {
+    [ -x $exec ] || exit 5
+    echo -n $"Starting $prog: "
+    $exec wikiserver.py start
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+	return $retval
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	$exec wikiserver.py stop
+	retval=$?
+	echo
+	[ $retval -eq 0 ] && rm -f $lockfile
+	return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+
+configtest() {
+    if [ "$#" -ne 0 ] ; then
+        case "$1" in
+            -q)
+                FLAG=$1
+                ;;
+            *)
+                ;;
+        esac
+        shift
+    fi
+    ${exec} -t $FLAG
+    RETVAL=$?
+    return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status nginx
+        ;;
+  restart)
+        restart
+        ;;
+  reload|force-reload)
+		restart
+		;;
+  condrestart)
+        [ -f $lockfile ] && restart || :
+        ;;
+  configtest)
+        configtest
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart|configtest}"
+        exit 1
+esac
+
+exit $?

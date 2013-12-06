@@ -3,6 +3,11 @@ package "wget" do
   action :install
 end
 
+package "vim" do
+  action :install
+end
+
+
 user "webadmin" do
   home "/home/webadmin"
   username "webadmin"
@@ -80,7 +85,12 @@ template "#{node[:nginx][:dir]}/index.html" do
 	path "#{node[:nginx][:dir]}/html/index.html"
 	source "index.html.erb" 
   mode   '0755'
+end
 
+template "/etc/init.d/nginx" do
+  path "/etc/init.d/nginx"
+  source "nginx.init.erb"
+  mode   '0755'
 end
 
 template 'nginx.conf' do
@@ -89,6 +99,7 @@ template 'nginx.conf' do
   owner  'root'
   group  'root'
   mode   '0644'
+  notifies :start, 'service[nginx]'
 end
 
 template "#{node['nginx']['dir']}/sites-enabled/default" do
@@ -96,16 +107,7 @@ template "#{node['nginx']['dir']}/sites-enabled/default" do
   owner  'root'
   group  'root'
   mode   '0644'
-end
-
-execute "Starting nginx" do
-  command "#{node[:nginx][:script_dir]}/nginx"
-  not_if { File.exists?("/var/run/nginx.pid") }
-end
-
-execute "Restarting nginx" do
-  command "#{node[:nginx][:script_dir]}/nginx -s reload"
-  only_if { File.exists?("/var/run/nginx.pid") }
+  notifies :restart, 'service[nginx]'
 end
 
 template "/etc/sysconfig/iptables" do
@@ -114,13 +116,15 @@ template "/etc/sysconfig/iptables" do
   owner "root"
   group "root"
   mode 00600
-  # notifies :restart, resources(:service => "iptables")
+  notifies :stop, 'service[iptables]'
 end
 
-# turn off iptables... not recommended for production
-execute "service iptables" do
-  user "root"
-  command "service iptables stop"
+service 'nginx' do
+  supports :status => true, :restart => true, :reload => true, :start =>true
+  action   :enable
 end
 
+service 'iptables' do
+  supports :status => true, :restart => true, :stop => true
+end
 

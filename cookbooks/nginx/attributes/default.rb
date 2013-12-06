@@ -4,7 +4,7 @@ default['nginx']['package_name'] = 'nginx'
 default['nginx']['dir']          = "#{node['nginx']['root_dir']}/#{node['nginx']['package_name']}/#{node['nginx']['package_name']}-#{node['nginx']['version']}"
 default['nginx']['script_dir']   = "#{node['nginx']['dir']}/sbin"
 default['nginx']['log_dir']      = "#{node['nginx']['dir']}/logs"
-default['nginx']['binary']       = "#{node['nginx']['script_dir']}#{node['nginx']['package_name']}"
+default['nginx']['binary']       = "#{node['nginx']['script_dir']}/#{node['nginx']['package_name']}"
 default['nginx']['conf_dir']     = "#{node['nginx']['dir']}/conf"
 default['nginx']['ssl_dir']      = "#{node['nginx']['conf_dir']}/ssl"
 

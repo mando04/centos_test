@@ -1,0 +1,60 @@
+#!/usr/bin/env python 
+import os
+import sys
+import subprocess
+import datetime
+import re
+
+
+try:
+    DTIME=datetime.datetime.now().isoformat()
+    APP_LOCATION=os.path.dirname(os.path.abspath(__file__))
+    APPNAME=sys.argv[1]
+except IndexError, e:
+    print "ERROR: " + DTIME + " No APPNAME given"
+    sys.exit(1)
+
+
+def start():
+    print "Starting app..."
+    status = os.system('nohup python ' + os.path.join(APP_LOCATION, 'wikiserver.py') + ' &')
+    if status != 0:
+        print "Failed ot start..."
+        sys.exit(1)
+    sys.exit(status)
+
+def stop():
+    print "Stoppping app..."
+    pid = subprocess.Popen(['ps','-efww'], stdout=subprocess.PIPE).communicate()[0]
+    l = []
+
+    for i in pid.split('\n'):
+        if re.search('%s$'%APPNAME, i): l.append(i)
+
+    if len(l) == 1:
+                print "Killing app..."
+                status = os.system('kill -9 %s' % l[0].split()[1] )
+                if status == 0:
+                        sys.exit(0)
+    elif len(l) > 1:
+        print "got more than 1 process... force killing..."
+        [ os.system('kill -9 %s' % i.split()[1] ) for i in l ]
+        sys.exit(0)
+    elif len(l) < 1:
+        print "It doesn't seem to be running..."
+        sys.exit(1)
+    else:
+        print "Failed to stop"
+        sys.exit(1)
+    sys.exit(0)
+
+opt = {
+    'stop': stop,
+    'start': start
+}
+
+try:
+    opt[sys.argv[2]]()
+except Exception, e:
+    print "Start or stop " + sys.argv[1] + "?"
+    sys.exit(1)

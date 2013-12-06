@@ -1,0 +1,5 @@
+default['www'] 					= "/apps/web/www"
+default['mywiki']['name']		= "moin"
+default['mywiki']['version']	= "1.9.7"
+default['mywiki']['root']		= "#{node['www']}/mywiki"
+default['mywiki']['binary'] 	= "#{node['mywiki']['root']}/#{node['mywiki']['name']}-#{node['mywiki']['version']}/managewiki.py"
