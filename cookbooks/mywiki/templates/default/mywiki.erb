@@ -23,6 +23,8 @@
 
 server {
     listen       443;
+    server_name mywiki.crabdance.com;
+
     access_log  <%= node['nginx']['log_dir'] %>/localhost-ssl.access.log;
     error_log <%= node['nginx']['log_dir'] %>/localhost-ssl.error.log;
     ssl                  on;
