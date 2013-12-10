@@ -1,4 +1,3 @@
-
 package "wget" do
   action :install
 end
@@ -6,6 +5,17 @@ end
 package "vim" do
   action :install
 end
+
+bash "yum groupinstall \'Development Tools\'" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  yum groupinstall 'Development Tools' -y
+  EOH
+end
+
+
 
 
 user "webadmin" do
