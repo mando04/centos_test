@@ -2,7 +2,7 @@ package "wget" do
   action :install
 end
 
-package "vim" do
+package "vim-enhance" do
   action :install
 end
 
